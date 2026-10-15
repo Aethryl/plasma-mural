@@ -15,8 +15,11 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-REPO = Path(__file__).resolve().parent.parent
-MANIFEST = REPO / "wallpapers" / "collection.json"
+MANIFEST = Path(
+    os.environ.get(
+        "MURAL_MANIFEST", Path.home() / "Repos" / "wallpapers" / "collection.json"
+    )
+)
 LIBRARY = Path(os.environ.get("MURAL_LIBRARY", Path.home() / "Pictures" / "Wallpapers"))
 STATE = (
     Path(os.environ.get("XDG_STATE_HOME", Path.home() / ".local" / "state"))
@@ -241,18 +244,8 @@ def trash(path: Path) -> None:
 
 
 def download(item: dict) -> bytes:
-    if item.get("dotfiles"):
-        return subprocess.run(
-            [
-                "gh",
-                "api",
-                "-H",
-                "Accept: application/vnd.github.raw",
-                f"repos/Aethryl/dotfiles/contents/{item['dotfiles']}",
-            ],
-            check=True,
-            capture_output=True,
-        ).stdout
+    if item.get("file"):
+        return (MANIFEST.parent / item["file"]).read_bytes()
     url = item["url"]
     urls = [url]
     if url.startswith(WIKIMEDIA) and "/thumb/" not in url:
@@ -282,7 +275,7 @@ def download(item: dict) -> bytes:
 
 
 def store(item: dict, data: bytes) -> Path:
-    source = item.get("dotfiles") or item["url"]
+    source = item.get("file") or item["url"]
     suffix = Path(source.split("?")[0]).suffix.lower()
     suffix = suffix if suffix in IMAGE_SUFFIXES else ".jpg"
     folder = LIBRARY / item["collection"]
