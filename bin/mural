@@ -37,6 +37,7 @@ COLLECTION_NAME = re.compile(r"^[\w][\w .-]{0,47}$")
 
 DEFAULTS = {
     "enabled": True,
+    "lockscreen": True,
     "collection": "all",
     "interval": 30,
     "current": None,
@@ -117,10 +118,12 @@ def eligible(state: dict, images: dict[str, Path]) -> list[str]:
     ]
 
 
-def apply(path: Path) -> None:
+def apply(path: Path, lockscreen: bool) -> None:
     subprocess.run(
         ["plasma-apply-wallpaperimage", str(path)], check=True, capture_output=True
     )
+    if not lockscreen:
+        return
     subprocess.run(
         [
             "kwriteconfig6",
@@ -158,7 +161,7 @@ def advance(state: dict) -> str | None:
         random.shuffle(queue)
     state["queue"] = queue
     state["current"] = key
-    apply(images[key])
+    apply(images[key], state["lockscreen"])
     return key
 
 
@@ -198,6 +201,7 @@ def status(state: dict) -> dict:
         }
     return {
         "enabled": state["enabled"],
+        "lockscreen": state["lockscreen"],
         "next": following,
         "collection": state["collection"],
         "interval": state["interval"],
@@ -383,6 +387,7 @@ def main() -> None:
         sub.add_parser(name)
     sub.add_parser("collection").add_argument("name")
     sub.add_parser("interval").add_argument("minutes", type=int)
+    sub.add_parser("lockscreen").add_argument("mode", choices=("on", "off"))
     for name in ("exclude", "include", "delete"):
         sub.add_parser(name).add_argument("ids", nargs="*")
     move_parser = sub.add_parser("move")
@@ -420,6 +425,11 @@ def main() -> None:
         state["collection"] = args.name if args.name == "all" else valid_name(args.name)
         state["queue"] = []
         advance(state)
+    elif command == "lockscreen":
+        state["lockscreen"] = args.mode == "on"
+        images = library()
+        if state["lockscreen"] and state["current"] in images:
+            apply(images[state["current"]], True)
     elif command == "interval":
         state["interval"] = max(1, args.minutes)
     elif command in ("exclude", "include", "delete"):

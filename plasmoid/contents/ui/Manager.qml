@@ -325,6 +325,14 @@ Rectangle {
                                 checked = Qt.binding(() => manager.app.rotating)
                             }
                         }
+                        QQC2.Switch {
+                            text: "Lock screen"
+                            checked: manager.app.lockscreen
+                            onToggled: {
+                                manager.act("lockscreen " + (checked ? "on" : "off"), false)
+                                checked = Qt.binding(() => manager.app.lockscreen)
+                            }
+                        }
                         QQC2.Button {
                             text: "Next"
                             icon.name: "media-skip-forward"

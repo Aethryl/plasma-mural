@@ -31,6 +31,7 @@ PlasmoidItem {
     readonly property var current: wall ? wall.current : null
     readonly property var upNext: wall ? wall.next : null
     readonly property bool rotating: !!wall && wall.enabled
+    readonly property bool lockscreen: !!wall && wall.lockscreen !== false
     readonly property var intervals: [
         { minutes: 10, label: "10m" },
         { minutes: 30, label: "30m" },
@@ -678,6 +679,24 @@ PlasmoidItem {
                                         root.wall = Object.assign({}, root.wall, { enabled: checked })
                                         root.advance(checked ? "on" : "off")
                                         checked = Qt.binding(() => root.rotating)
+                                    }
+                                }
+                            }
+
+                            ColumnLayout {
+                                Layout.alignment: Qt.AlignRight | Qt.AlignTop
+                                spacing: Kirigami.Units.smallSpacing
+                                Caption {
+                                    Layout.alignment: Qt.AlignRight
+                                    text: "Lock screen"
+                                }
+                                PlasmaComponents.Switch {
+                                    Layout.alignment: Qt.AlignRight
+                                    checked: root.lockscreen
+                                    onToggled: {
+                                        root.wall = Object.assign({}, root.wall, { lockscreen: checked })
+                                        root.run("lockscreen " + (checked ? "on" : "off"))
+                                        checked = Qt.binding(() => root.lockscreen)
                                     }
                                 }
                             }
