@@ -17,7 +17,7 @@ from pathlib import Path
 
 MANIFEST = Path(
     os.environ.get(
-        "MURAL_MANIFEST", Path.home() / "Repos" / "wallpapers" / "collection.json"
+        "MURAL_MANIFEST", Path.home() / "Repos" / "rice" / "wallpapers" / "collection.json"
     )
 )
 LIBRARY = Path(os.environ.get("MURAL_LIBRARY", Path.home() / "Pictures" / "Wallpapers"))
