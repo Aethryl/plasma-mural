@@ -41,6 +41,7 @@ DEFAULTS = {
     "collection": "all",
     "interval": 30,
     "current": None,
+    "changed": 0,
     "queue": [],
     "excluded": [],
     "deleted": [],
@@ -161,8 +162,20 @@ def advance(state: dict) -> str | None:
         random.shuffle(queue)
     state["queue"] = queue
     state["current"] = key
+    state["changed"] = time.time()
     apply(images[key], state["lockscreen"])
     return key
+
+
+def resume(state: dict) -> None:
+    images = library()
+    if state["current"] in images:
+        apply(images[state["current"]], state["lockscreen"])
+    if not state["enabled"]:
+        return
+    due = time.time() - state["changed"] >= state["interval"] * 60
+    if due or state["current"] not in eligible(state, images):
+        advance(state)
 
 
 def status(state: dict) -> dict:
@@ -383,7 +396,7 @@ def fetch(state: dict) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(prog="mural")
     sub = parser.add_subparsers(dest="command", required=True)
-    for name in ("status", "list", "next", "skip", "fetch", "on", "off"):
+    for name in ("status", "list", "next", "resume", "skip", "fetch", "on", "off"):
         sub.add_parser(name)
     sub.add_parser("collection").add_argument("name")
     sub.add_parser("interval").add_argument("minutes", type=int)
@@ -413,6 +426,8 @@ def main() -> None:
     current = state["current"]
     if command == "next":
         advance(state)
+    elif command == "resume":
+        resume(state)
     elif command == "skip":
         queue = state["queue"]
         if len(queue) > 1:

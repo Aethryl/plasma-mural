@@ -119,8 +119,8 @@ PlasmoidItem {
         root.failed = false
         if (!root.started) {
             root.started = true
-            if (root.inPanel && parsed.enabled && !parsed.current && parsed.total > 0)
-                root.advance("next")
+            if (root.inPanel && parsed.total > 0)
+                root.advance("resume")
         }
     }
 
