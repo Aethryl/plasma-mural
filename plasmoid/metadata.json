@@ -1,6 +1,6 @@
 {
     "KPlugin": {
-        "Authors": [{ "Name": "Fabian" }],
+        "Authors": [{ "Name": "Aethryl" }],
         "Category": "Utilities",
         "Description": "Wallpaper rotation through mural collections",
         "Icon": "preferences-desktop-wallpaper",
