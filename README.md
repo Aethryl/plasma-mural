@@ -1,10 +1,33 @@
 # plasma-mural
 
-Wallpaper rotation for the Plasma 6 desktop and lock screen: a panel widget plus the `mural` CLI behind it.
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/panel-dark.png">
+  <img src="docs/screenshots/panel-light.png" alt="Mural panel thumbnail previewing the next wallpaper" width="110">
+</picture>
 
-- The bar shows the next wallpaper; the notch shows now-showing, up-next, skip, remove and delete.
-- "Manage..." opens a full manager window (`plasmawindowed io.github.aethryl.mural`).
-- Images are grouped in collections, fetched from a manifest and kept in `$MURAL_LIBRARY/<collection>/`.
+Mural rotates the Plasma 6 desktop and lock screen wallpapers. Use the panel widget for everyday controls and the `mural` CLI for working with your library.
+
+## Preview and rotate
+
+- The panel thumbnail previews the next wallpaper. Open the notch to see the current and next images, show the next one immediately, or skip, remove or delete an image.
+- **Manage…** opens the full wallpaper manager (`plasmawindowed io.github.aethryl.mural`).
+- Mural fetches images from a manifest and keeps them in collections under `$MURAL_LIBRARY/<collection>/`.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/notch-dark.png">
+  <img src="docs/screenshots/notch-light.png" alt="Mural notch showing the current and next sample wallpapers, collection choices and rotation interval" width="420">
+</picture>
+
+The demo below shows **Stillwater Fjord** on the desktop and **Ochre Horizons** after selecting **Show now**. The screenshots use original sample artwork.
+
+<img src="docs/screenshots/rotation-before.png" alt="Plasma desktop showing Stillwater Fjord before rotation" width="400">
+<img src="docs/screenshots/rotation-after.png" alt="Plasma desktop showing Ochre Horizons after rotation" width="400">
+
+## Requirements
+
+- Plasma 6 (tested on 6.7.5)
+- `plasma-sdk` for the manager window (`plasmawindowed`)
+- Python 3, ImageMagick (`magick`), `gio` or `kioclient`, `plasma-apply-wallpaperimage`, `kwriteconfig6`
 
 ## Install
 
@@ -17,11 +40,19 @@ gdbus call --session -d org.kde.plasmashell -o /PlasmaShell \
 mural fetch
 ```
 
-`install.sh` symlinks `plasmoid/` into `${XDG_DATA_HOME:-~/.local/share}/plasma/plasmoids/io.github.aethryl.mural` and `bin/mural` into `~/.local/bin/mural`, so edits are live. After a QML change run `systemctl --user restart plasma-plasmashell`. Instead of the gdbus call you can add "Mural" through the panel's edit mode.
+`install.sh` symlinks `plasmoid/` into `${XDG_DATA_HOME:-~/.local/share}/plasma/plasmoids/io.github.aethryl.mural` and `bin/mural` into `~/.local/bin/mural`, so edits are live. After a QML change, run `systemctl --user restart plasma-plasmashell`. You can use the gdbus command or add **Mural** through the panel's edit mode.
 
 ## CLI
 
-`mural <command>`: `status`, `list`, `next`, `skip`, `resume`, `on`, `off`, `fetch`, `collection <name|all>`, `interval <minutes>`, `lockscreen on|off`, `exclude|include|delete [ids]`, `move <collection> <ids>`, `mkcol`, `rename`, `rmcol [--into <collection>]`. Most print the state as JSON.
+Run `mural <command>`. Most commands print the state as JSON.
+
+| Task | Commands |
+|---|---|
+| Inspect or fetch | `status`, `list`, `fetch` |
+| Control rotation | `next`, `skip`, `resume`, `on`, `off`, `collection <name\|all>`, `interval <minutes>`, `lockscreen on\|off` |
+| Manage the library | `exclude\|include\|delete [ids]`, `move <collection> <ids>`, `mkcol`, `rename`, `rmcol [--into <collection>]` |
+
+## Library configuration
 
 | Variable | Default | Meaning |
 |---|---|---|
@@ -66,12 +97,6 @@ The default manifest path is the author's private wallpapers repo; set `MURAL_MA
 
 Wikimedia Commons URLs are fetched as 3840 or 2560 px thumbnails when possible. Images below 2560x1440 are rejected; images above 5160 px on the long side are scaled down (pixel-art collections are shrunk with a point filter). `delete`, `move` and `rename` also update the manifest.
 
-## Requirements
-
-- Plasma 6 (tested on 6.7.5)
-- `plasma-sdk` for the manager window (`plasmawindowed`)
-- Python 3, ImageMagick (`magick`), `gio` or `kioclient`, `plasma-apply-wallpaperimage`, `kwriteconfig6`
-
 ## Licence
 
-The code is MIT, see `LICENSE`. No images are shipped; they are fetched at runtime from the URLs in your manifest (the author's use Wikimedia Commons), each under its own licence.
+The code is MIT, see `LICENSE`. Mural ships without a wallpaper library. It fetches wallpapers at runtime from the URLs in your manifest. The author's manifest uses Wikimedia Commons, where each image has its own licence.
