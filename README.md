@@ -2,7 +2,7 @@
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/panel-dark.png">
-  <img src="docs/screenshots/panel-light.png" alt="Mural panel thumbnail previewing the next wallpaper" width="110">
+  <img src="docs/screenshots/panel-light.png" alt="Mural panel thumbnail previewing the next wallpaper" width="240">
 </picture>
 
 Mural rotates the Plasma 6 desktop and lock screen wallpapers. Use the panel widget for everyday controls and the `mural` CLI for working with your library.
@@ -15,7 +15,7 @@ Mural rotates the Plasma 6 desktop and lock screen wallpapers. Use the panel wid
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/notch-dark.png">
-  <img src="docs/screenshots/notch-light.png" alt="Mural notch showing the current and next sample wallpapers, collection choices and rotation interval" width="420">
+  <img src="docs/screenshots/notch-light.png" alt="Mural notch showing the current and next sample wallpapers, collection choices and rotation interval" width="540">
 </picture>
 
 The demo below shows **Stillwater Fjord** on the desktop and **Ochre Horizons** after selecting **Show now**. The screenshots use original sample artwork.
